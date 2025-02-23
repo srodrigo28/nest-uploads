@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from '../prisma/prisma.service'
+import { PaginationDTO } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class TasksService {
@@ -32,7 +33,34 @@ export class TasksService {
   }
 
   async findAll() {
-    const allTasks = await this.prisma.task.findMany();
+    const allTasks = await this.prisma.task.findMany({
+      orderBy: { created: "desc" }
+    });
+    return allTasks;
+  }
+
+  async findAllNameAsc() {
+    const allTasks = await this.prisma.task.findMany({
+      orderBy: { name: "asc" }
+    });
+    return allTasks;
+  }
+
+  async findAllCompleTrue() {
+    const allTasks = await this.prisma.task.findMany({
+      orderBy: { completed: "asc" }
+    });
+    return allTasks;
+  }
+
+  async findAllPagination(paginationDTO: PaginationDTO) {
+    const { limit = 10, offset = 0 } = paginationDTO;
+    
+    console.log(paginationDTO)
+    
+    const allTasks = await this.prisma.task.findMany({
+      take: limit, skip: offset
+    });
     return allTasks;
   }
 
