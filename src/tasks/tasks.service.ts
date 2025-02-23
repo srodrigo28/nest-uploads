@@ -5,22 +5,30 @@ import { PrismaService } from '../prisma/prisma.service'
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly prisma: PrismaService){}
+  // criando uma estancia do PrismaService para carregar todas as tabelas
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createTaskDto: CreateTaskDto) {
-    const tarefaExists = await this.prisma.task.findFirst();
-
-   // if(tarefaExists){}
     
-   const newTask = await this.prisma.task.create({
-      data: { 
-        name: createTaskDto.name, 
-        description: createTaskDto.description, 
-        completed: false, 
+    const findTask = await this.prisma.task.findFirst({
+      where: { name: createTaskDto.name }
+    })
+    
+    if (findTask) {
+      throw new HttpException("Tarefa Já existe! ", HttpStatus.UNAUTHORIZED)
+    }
+
+    const newTask = await this.prisma.task.create({
+      data: {
+        name: createTaskDto.name,
+        description: createTaskDto.description,
+        completed: false,
       },
       select: { name: true }
     })
+    
     return { "Sucesso: ": newTask }
+
   }
 
   async findAll() {
@@ -31,19 +39,54 @@ export class TasksService {
   async findOne(id: number) {
     const task = await this.prisma.task.findFirst({
       where: { id: id }
-    }) 
-    if(task?.name) return task
+    })
+    
+    if (task?.name) return task
 
     throw new HttpException("Tarefa não foi encontrada! ", HttpStatus.NOT_FOUND)
 
-    // return { "Error: " : "Nenhum registor disponivel"};
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: number, updateTaskDto: UpdateTaskDto) {
+    try {
+      const findTask = await this.prisma.task.findFirst({
+        where: { id: id }
+      })
+
+      if (!findTask) {
+        throw new HttpException("Essa tarefa não existe!", HttpStatus.NOT_FOUND)
+      }
+
+      const task = this.prisma.task.update({
+        where: { id: findTask.id },
+        data: updateTaskDto
+      })
+
+      return task;
+    } catch (error) {
+      throw new HttpException("Falha ao tentar atualizar", HttpStatus.BAD_REQUEST)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: number) {
+    try {
+      const findTask = await this.prisma.task.findFirst({
+        where: { id: id }
+      })
+
+      if (!findTask) {
+        throw new HttpException("Tarefa não encontrada! ", HttpStatus.NOT_FOUND)
+      }
+
+      await this.prisma.task.delete({
+        where: { id: findTask.id }
+      })
+
+      return { message: "Tarefa removida com sucesso!" }
+
+    } catch (error) {
+      throw new HttpException("Falha ao tentar Excluir",  HttpStatus.BAD_REQUEST)
+    }
   }
+
 }

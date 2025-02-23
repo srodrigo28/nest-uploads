@@ -1,6 +1,6 @@
 * https://www.udemy.com/course/nestjs-completo/learn/lecture/47025273#overview
 
-#### Criando Api Next Imagens base
+#### 1. Criando Api Next Imagens base
 
 * Criando projeto
 ```
@@ -12,7 +12,7 @@ npx nest new project
 npm run start:dev
 ```
 
-#### Prisma ORM
+#### 2. Prisma ORM
 ```
 npm install prisma --save-dev
 ```
@@ -58,23 +58,80 @@ model Category{
 npx prisma migrate
 ```
 
-#### Para visualizar e testar o banco
+#### 2.1 Criando modulo
+```
+npx nest g module prisma --no-spec
+```
+
+* Criando modulo
+```
+npx nest g service prisma --no-spec
+```
+
+#### 2.2 Opcional Para visualizar e testar o banco
 * gerando o Prisma Studio Gerenciador db
 ```
 npx prisma studio
 ```
 
-#### Criando endAPI Users
+#### 4. Criando endAPI Users
 ```
 npx nest g res users
 ```
 
-#### Criando endAPI Tasks
+#### 5. Validator Pipes
+* ref.
+```
+https://www.npmjs.com/package/@nestjs/class-validator/v/0.13.1
+```
+
+* Dependência
+```
+npm install class-validator class-transformer
+```
+
+* Dentro do main.ts
+```
+  import { NestFactory } from '@nestjs/core';
+  import { AppModule } from './app.module';
+  import { ValidationPipe } from '@nestjs/common';
+
+  async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    app.useGlobalPipes(new ValidationPipe())
+    await app.listen(process.env.PORT ?? 8080);
+  }
+  bootstrap();
+```
+
+* Aplicação nos DTOs exemplo
+```
+  import { IsBoolean, IsNotEmpty, IsString, IsEmail
+      MaxLength, MinLength } from "class-validator";
+
+  export class CreateUserDto {
+      @IsString()
+      @IsNotEmpty()
+      @MinLength(5, { message: "maior que 5 caracteres" })
+      @MaxLength(30, { message: "não pode ser maior que 30 caracteres" })
+      readonly name: string;
+      
+      @IsString()
+      @IsNotEmpty()
+      @IsEmail()
+      readonly email: string;
+      
+      @IsBoolean()
+      completed?: boolean;
+  }
+```
+
+#### 6. Criando endAPI Tasks
 ```
 npx nest g res tasks
 ```
 
-#### Upload One Image
+#### 7. Upload One Image
 npm install multer
 npm install --save-dev @types/multer
 
@@ -109,26 +166,13 @@ https://docs.nestjs.com/recipes/serve-static
 http://localhost:8080/files/image.png
 ```
 
-#### Nest MVC
+#### 8. Nest MVC
 ```
 https://docs.nestjs.com/techniques/mvc
 ```
 
 ```
 http://localhost:8080/files/image.mp4
-```
-
-
-#### Gerando conexão prisma para ligar endpoints
-
-#### Criando modulo
-```
-npx nest g module prisma --no-spec
-```
-
-* Criando modulo
-```
-npx nest g service prisma --no-spec
 ```
 
 #### Relacionando imagem e usuário
