@@ -29,6 +29,7 @@ npm install --save-dev @types/multer
 
 #### Validando uploads
 * ok
+
 #### Criando url Estáticas
 * dependêncie
 ```
@@ -61,6 +62,30 @@ https://docs.nestjs.com/techniques/mvc
 
 ```
 http://localhost:8080/files/image.mp4
+```
+
+#### Prisma ORM
+```
+npm install prisma --save-dev
+```
+
+```
+npm install @prisma/client
+```
+
+* gerando o Prisma Schema
+```
+npx prisma init
+```
+
+* gerando o Prisma Criando ou atualizando tabela
+```
+npx prisma migrate
+```
+
+* gerando o Prisma Studio Gerenciador db
+```
+npx prisma studio
 ```
 
 #### Relacionando imagem e usuário
