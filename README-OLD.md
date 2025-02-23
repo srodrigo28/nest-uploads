@@ -1,6 +1,5 @@
 * https://www.udemy.com/course/nestjs-completo/learn/lecture/47025273#overview
 
-
 #### Criando Api Next Imagens base
 
 * Criando projeto
@@ -13,16 +12,64 @@ npx nest new project
 npm run start:dev
 ```
 
-#### Criando endAPI Users
+#### Prisma ORM
+```
+npm install prisma --save-dev
+```
 
-* endpoint api users
+```
+npm install @prisma/client
+```
+
+* gerando o Prisma Schema
+```
+npx prisma init
+```
+
+* Config .env --> Rodando SQLite
+```
+DATABASE_URL="file:./banco.db"
+```
+
+##### Config schema.prisma
+* config conexão
+```
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+
+* Primeta tabela
+```
+model Category{
+  id    Int  @id @default(autoincrement())
+  name String @unique
+
+  created DateTime @default(now())
+  updated DateTime @updatedAt()
+
+  @@map("categoria")
+}
+```
+
+* gerando o Prisma Criando ou atualizando tabela
+```
+npx prisma migrate
+```
+
+#### Para visualizar e testar o banco
+* gerando o Prisma Studio Gerenciador db
+```
+npx prisma studio
+```
+
+#### Criando endAPI Users
 ```
 npx nest g res users
 ```
 
 #### Criando endAPI Tasks
-
-* endpoint api tasks
 ```
 npx nest g res tasks
 ```
@@ -31,13 +78,13 @@ npx nest g res tasks
 npm install multer
 npm install --save-dev @types/multer
 
-#### Upload Multiplas Imagens
+##### Upload Multiplas Imagens
 * ok
 
-#### Validando uploads
+##### Validando uploads
 * ok
 
-#### Criando url Estáticas
+##### Criando url Estáticas
 * dependêncie
 ```
 npm install --save @nestjs/serve-static
@@ -62,7 +109,7 @@ https://docs.nestjs.com/recipes/serve-static
 http://localhost:8080/files/image.png
 ```
 
-##### Nest MVC
+#### Nest MVC
 ```
 https://docs.nestjs.com/techniques/mvc
 ```
@@ -71,56 +118,17 @@ https://docs.nestjs.com/techniques/mvc
 http://localhost:8080/files/image.mp4
 ```
 
-#### Prisma ORM
-```
-npm install prisma --save-dev
-```
 
-```
-npm install @prisma/client
-```
+#### Gerando conexão prisma para ligar endpoints
 
-* gerando o Prisma Schema
-```
-npx prisma init
-```
-
-* gerando o Prisma Criando ou atualizando tabela
-```
-npx prisma migrate
-```
-
-* gerando o Prisma Studio Gerenciador db
-```
-npx prisma studio
-```
-
-#### Gerando conexão prisma
-
-* Criando Prisma modulo
+#### Criando modulo
 ```
 npx nest g module prisma --no-spec
 ```
 
-* Criando Prisma Service
+* Criando modulo
 ```
 npx nest g service prisma --no-spec
-```
-
-* Modelo Prisma Module
-
-* Modelo Prisma service
-
-```
-    import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-    import { PrismaClient } from '@prisma/client';
-
-    @Injectable()
-    export class PrismaService extends PrismaClient implements 
-        OnModuleInit, OnModuleDestroy {
-            async onModuleInit() { await this.$connect() }
-            async onModuleDestroy() { await this.$disconnect() }
-    }
 ```
 
 #### Relacionando imagem e usuário

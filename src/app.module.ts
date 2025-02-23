@@ -5,13 +5,14 @@ import { UsersModule } from './users/users.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
 import { TasksModule } from './tasks/tasks.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [UsersModule, TasksModule,
+  imports: [UsersModule, TasksModule, PrismaModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'files'),
       serveRoot: "/files"
-    }), TasksModule
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
