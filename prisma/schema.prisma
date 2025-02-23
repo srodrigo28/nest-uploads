@@ -24,3 +24,13 @@ model Task{
 
   @@map("tarefas")
 }
+
+model Category{
+  id    Int  @id @default(autoincrement())
+  name String @unique
+
+  created DateTime @default(now())
+  updated DateTime @updatedAt()
+
+  @@map("categoria")
+}

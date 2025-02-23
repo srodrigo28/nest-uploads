@@ -6,9 +6,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
 import { TasksModule } from './tasks/tasks.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [UsersModule, TasksModule, PrismaModule,
+  imports: [PrismaModule, UsersModule, TasksModule, CategoryModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'files'),
       serveRoot: "/files"

@@ -55,8 +55,7 @@ export class TasksService {
 
   async findAllPagination(paginationDTO: PaginationDTO) {
     const { limit = 10, offset = 0 } = paginationDTO;
-    
-    console.log(paginationDTO)
+    //console.log(paginationDTO)
     
     const allTasks = await this.prisma.task.findMany({
       take: limit, skip: offset
