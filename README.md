@@ -13,11 +13,18 @@ npx nest new project
 npm run start:dev
 ```
 
-#### Criando endAPI
+#### Criando endAPI Users
 
 * endpoint api users
 ```
 npx nest g res users
+```
+
+#### Criando endAPI Tasks
+
+* endpoint api tasks
+```
+npx nest g res tasks
 ```
 
 #### Upload One Image

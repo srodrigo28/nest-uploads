@@ -38,10 +38,7 @@ export class UsersController {
 
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload')
-  uploadUser(
-    @UploadedFile() file: Express.Multer.File
-  ){
-
+  uploadUser( @UploadedFile() file: Express.Multer.File) {
     const mimeType = file.mimetype;
     console.log(file)
 
