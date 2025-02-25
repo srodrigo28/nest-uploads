@@ -23,8 +23,23 @@ model Task{
   updated DateTime @updatedAt()
 
   @@map("tarefas")
+  userId Int?
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
 
+model User{
+  id    Int  @id @default(autoincrement())
+  name String @unique
+  email String @unique
+  passwordHash String
+  
+  created DateTime @default(now())
+  updated DateTime @updatedAt()
+
+  @@map("usuarios")
+  tasks Task[]
+}
 model Category{
   id    Int  @id @default(autoincrement())
   name String @unique
