@@ -198,6 +198,16 @@ npm install swagger-ui-express
   SwaggerModule.setup('docs', app, documentFactory)
   ```
 
+  * nest-cli.json
+  ```
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "plugins": [
+      "@nestjs/swagger/plugin"
+    ]
+  }
+  ```
+
 #### Relacionando imagem e usuário
 
 

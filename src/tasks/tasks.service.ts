@@ -3,13 +3,14 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from '../prisma/prisma.service'
 import { PaginationDTO } from 'src/common/dto/pagination.dto';
+import { ResponseTaskDto } from './dto/response-task.dto';
 
 @Injectable()
 export class TasksService {
   // criando uma estancia do PrismaService para carregar todas as tabelas
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createTaskDto: CreateTaskDto) {
+  async create(createTaskDto: CreateTaskDto)  {
     
     const findTask = await this.prisma.task.findFirst({
       where: { name: createTaskDto.name }
@@ -32,28 +33,28 @@ export class TasksService {
 
   }
 
-  async findAll() {
+  async findAll() : Promise<ResponseTaskDto[]> {
     const allTasks = await this.prisma.task.findMany({
       orderBy: { created: "desc" }
     });
     return allTasks;
   }
 
-  async findAllNameAsc() {
+  async findAllNameAsc() : Promise<ResponseTaskDto[]> {
     const allTasks = await this.prisma.task.findMany({
       orderBy: { name: "asc" }
     });
     return allTasks;
   }
 
-  async findAllCompleTrue() {
+  async findAllCompleTrue() : Promise<ResponseTaskDto[]> {
     const allTasks = await this.prisma.task.findMany({
       orderBy: { completed: "asc" }
     });
     return allTasks;
   }
 
-  async findAllPagination(paginationDTO: PaginationDTO) {
+  async findAllPagination(paginationDTO: PaginationDTO): Promise<ResponseTaskDto[]> {
     const { limit = 10, offset = 0 } = paginationDTO;
     //console.log(paginationDTO)
     
@@ -63,7 +64,7 @@ export class TasksService {
     return allTasks;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number) : Promise<ResponseTaskDto> {
     const task = await this.prisma.task.findFirst({
       where: { id: id }
     })
@@ -74,7 +75,7 @@ export class TasksService {
 
   }
 
-  async update(id: number, updateTaskDto: UpdateTaskDto) {
+  async update(id: number, updateTaskDto: UpdateTaskDto) : Promise<ResponseTaskDto> {
     try {
       const findTask = await this.prisma.task.findFirst({
         where: { id: id }
