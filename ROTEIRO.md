@@ -7,7 +7,7 @@
 npx nest new project
 ```
 
-* Rodando o projeto
+#### 1.1 Rodando o projeto
 ```
 npm run start:dev
 ```
@@ -175,4 +175,29 @@ https://docs.nestjs.com/techniques/mvc
 http://localhost:8080/files/image.mp4
 ```
 
+#### Documentação com Swagger
+
+```
+npm install --save @nestjs/swagger
+```
+
+```
+npm install swagger-ui-express
+```
+
+* config no main.ts
+```
+  const configSwagger = new DocumentBuilder()
+    .setDescription('API lista de tarefas')
+    .setBasePath('localhost:8080')
+    .setTitle('Lista de Tarefas')
+    .setVersion('1.0')
+    .build();
+
+  const documentFactory = () => SwaggerModule.createDocument(app, configSwagger)
+  SwaggerModule.setup('docs', app, documentFactory)
+  ```
+
 #### Relacionando imagem e usuário
+
+

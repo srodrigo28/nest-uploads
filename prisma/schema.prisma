@@ -40,6 +40,7 @@ model User{
   @@map("usuarios")
   tasks Task[]
 }
+
 model Category{
   id    Int  @id @default(autoincrement())
   name String @unique
