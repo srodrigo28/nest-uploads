@@ -1,30 +1,95 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
-import { randomUUID } from 'node:crypto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private prisma: PrismaService){}
+
+  async create(createUserDto: CreateUserDto) {
+    try{
+      const user = await this.prisma.user.create({
+        data: {
+          name: createUserDto.name,
+          email: createUserDto.email,
+          passwordHash: createUserDto.password
+        },
+        select:{ id:true, name: true, email: true }
+      })
+      return user;
+    }catch(error){
+      console.log(error)
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const user = await this.prisma.user.findMany()
+
+    if(user) return user;
+
+    throw new HttpException('Não tem registros', HttpStatus.NOT_FOUND)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: id}
+    })
+
+    if(user) return user;
+
+    throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try{
+      // verifica se existe o id do usuário
+      const user = await this.prisma.user.findFirst({
+        where: { id: id },
+      })
+
+      // se não existir retorna o erro
+      if(!user) { 
+        throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND) 
+      }
+      // caso exista então atualiza
+      const updateUser = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { 
+          name: updateUserDto.name ? updateUserDto.name : user.name, 
+          email: updateUserDto.email ? updateUserDto.email : user.email, 
+          passwordHash: updateUserDto.password ? user.passwordHash : user.passwordHash
+      },
+      // retorna os dados
+      select: { id: true, name: true, email: true }
+    })
+
+    return updateUser;
+    
+    } catch(error) {
+      console.log(error)
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async delete(id: number) {
+    try{
+      const user = await this.prisma.user.findFirst({
+        where: { id: id }
+      })
+
+      if(!user){ throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND) }
+    
+      await this.prisma.user.delete({
+        where: { id: user.id}
+      })
+    }catch(error){
+      console.log(error)
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+    }
   }
 
   async upload1(file: Express.Multer.File){

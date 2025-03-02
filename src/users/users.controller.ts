@@ -1,15 +1,47 @@
 import { Controller, Post, UseInterceptors, UploadedFile, 
-  UploadedFiles, ParseFilePipeBuilder, HttpStatus } from '@nestjs/common';
+  UploadedFiles, ParseFilePipeBuilder, HttpStatus, 
+  Get, ParseIntPipe, Param,
+  Body,
+  Patch,
+  Delete} from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import { randomUUID } from 'node:crypto';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService){}
 
+  @Get(':id')
+  findOneUser(@Param('id', ParseIntPipe) id: number){
+    return this.userService.findOne(id)
+  }
+
+  @Get()
+  findAll(){
+    return this.userService.findAll()
+  }
+
+  @Post()
+  createUser(@Body() createUserDto: CreateUserDto){
+    return this.userService.create(createUserDto)
+  }
+
+  @Patch(':id')
+  updateUser(@Param('id', ParseIntPipe) id: number, @Body() updatedUserDto: UpdateUserDto){
+    return this.userService.update(id, updatedUserDto)
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id', ParseIntPipe) id: number){
+    return this.userService.delete(id)
+  }
+
+  // ### TODAS ROTAS DE UPLOADS ###
   // Upload 1 :: Rota sem validação com name image
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload')
@@ -76,7 +108,7 @@ export class UsersController {
     return true
   }
 
-  // Videos ##############3
+  // Upload 5 :: Videos ##############3
 
   // Upload 5 :: Rota Video sem validação // não esquecer de mudar file para movie
   @UseInterceptors(FileInterceptor('movie'))

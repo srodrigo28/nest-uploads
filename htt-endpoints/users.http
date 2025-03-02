@@ -1,0 +1,28 @@
+###
+GET http://localhost:8080/users
+
+###
+GET http://localhost:8080/users/1
+
+###
+DELETE http://localhost:8080/users/2
+
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "name": "Xiaomi X-3 pro",
+    "email": "admin@gmail.com",
+    "password": "123123"
+}
+
+###
+PATCH http://localhost:8080/users/1
+Content-Type: application/json
+
+{
+    "name": "Xiaomi X-3 pro 2 atualizado",
+    "email": "admin2_atualizado@gmail.com",
+    "password": "123123"
+}
