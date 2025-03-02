@@ -58,7 +58,7 @@ model Category{
 npx prisma migrate
 ```
 
-#### 2.1 Criando modulo
+#### 2.1 Criando modulo de conexão
 ```
 npx nest g module prisma --no-spec
 ```

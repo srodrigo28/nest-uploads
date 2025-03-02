@@ -45,17 +45,6 @@ export class UsersService {
     throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
   }
 
-  async findOneUserWithTask(id: number) {
-    const user = await this.prisma.user.findFirst({
-      where: { id: id },
-      select: { id: true, email: true, Task: true }
-    })
-
-    if(user) return user;
-
-    throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
-  }
-
   async update(id: number, updateUserDto: UpdateUserDto) {
     try{
       // verifica se existe o id do usuário
