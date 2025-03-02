@@ -38,7 +38,7 @@ model User{
   updated DateTime @updatedAt()
 
   @@map("usuarios")
-  tasks Task[]
+  Task Task[]
 }
 
 model Category{

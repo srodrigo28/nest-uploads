@@ -36,7 +36,19 @@ export class UsersService {
 
   async findOne(id: number) {
     const user = await this.prisma.user.findFirst({
-      where: { id: id}
+      where: { id: id },
+      select: { id: true, email: true, Task: true }
+    })
+
+    if(user) return user;
+
+    throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+  }
+
+  async findOneUserWithTask(id: number) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: id },
+      select: { id: true, email: true, Task: true }
     })
 
     if(user) return user;

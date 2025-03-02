@@ -12,25 +12,30 @@ export class TasksService {
 
   async create(createTaskDto: CreateTaskDto)  {
     
-    const findTask = await this.prisma.task.findFirst({
-      where: { name: createTaskDto.name }
-    })
-    
-    if (findTask) {
-      throw new HttpException("Tarefa Já existe! ", HttpStatus.UNAUTHORIZED)
+    try{
+      const findTask = await this.prisma.task.findFirst({
+        where: { name: createTaskDto.name }
+      })
+      
+      if (findTask) {
+        throw new HttpException("Tarefa Já existe! ", HttpStatus.UNAUTHORIZED)
+      }
+  
+      const newTask = await this.prisma.task.create({
+        data: {
+          name: createTaskDto.name,
+          description: createTaskDto.description,
+          completed: false,
+          userId: createTaskDto.userId
+        },
+        select: { name: true, userId: true }
+      })
+      
+      return { "Sucesso: ": newTask }
+    }catch(error){
+      console.log(error)
+      throw new HttpException('Não foi possivel cadastrar', HttpStatus.BAD_REQUEST)
     }
-
-    const newTask = await this.prisma.task.create({
-      data: {
-        name: createTaskDto.name,
-        description: createTaskDto.description,
-        completed: false,
-      },
-      select: { name: true }
-    })
-    
-    return { "Sucesso: ": newTask }
-
   }
 
   async findAll() : Promise<ResponseTaskDto[]> {
@@ -87,7 +92,11 @@ export class TasksService {
 
       const task = this.prisma.task.update({
         where: { id: findTask.id },
-        data: updateTaskDto
+        data: { 
+          name: updateTaskDto.name ? updateTaskDto.name : findTask.name,
+          description: updateTaskDto.description ? updateTaskDto.description : findTask.description,
+          completed: updateTaskDto.completed ? updateTaskDto.completed : findTask.completed
+         }
       })
 
       return task;

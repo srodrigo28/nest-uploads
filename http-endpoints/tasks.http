@@ -1,0 +1,28 @@
+###
+GET http://localhost:8080/tasks
+
+###
+GET http://localhost:8080/tasks/1
+
+###
+DELETE http://localhost:8080/tasks/16
+
+###
+POST http://localhost:8080/tasks
+Content-Type: application/json
+
+{
+    "name": "Revisar ReactTS",
+    "description": "2x por semana",
+    "userId": 3
+}
+
+###
+PATCH http://localhost:8080/tasks/1
+Content-Type: application/json
+
+{
+    "name": "Xiaomi X-3 pro 2 atualizado",
+    "email": "admin2_atualizado@gmail.com",
+    "password": "123123"
+}
