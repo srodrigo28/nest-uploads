@@ -8,17 +8,22 @@ import { TasksModule } from './tasks/tasks.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { CategoryModule } from './category/category.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { APP_FILTER } from '@nestjs/core';
+import { ApiExceptionFilter } from './common/filters/exception-filter';
 
 @Module({
-  imports: [PrismaModule, UsersModule, TasksModule, CategoryModule, UsersModule,
+  imports: [PrismaModule, UsersModule, TasksModule, CategoryModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'files'),
       serveRoot: "/files"
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {
+    provide: APP_FILTER, useClass: ApiExceptionFilter
+  }],
 })
+
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware)
