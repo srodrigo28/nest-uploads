@@ -7,7 +7,7 @@ export class AddHeaderInterceptor implements NestInterceptor{
         Promise<Observable<any>> {
             const response = context.switchToHttp().getResponse();
 
-            response.setHeader('X-Custom', 'Valor chave 123')
+            response.setHeader('X-Custom-By-Seb-App', 'Valor chave 123')
 
             return next.handle()
 

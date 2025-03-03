@@ -4,11 +4,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import { PrismaService } from 'src/prisma/prisma.service';
+import { HashingServiceProtocol } from 'src/auth/hash/hashing.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService){}
+  constructor(
+    private prisma: PrismaService,
+    private readonly hashingService: HashingServiceProtocol
+  ){}
 
+  // sem criptor
   async create(createUserDto: CreateUserDto) {
     try{
       const user = await this.prisma.user.create({
@@ -18,6 +23,25 @@ export class UsersService {
           passwordHash: createUserDto.password
         },
         select:{ id:true, name: true, email: true }
+      })
+      return user;
+    }catch(error){
+      console.log(error)
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+    }
+  }
+
+  // com criptor
+  async createCriptor(createUserDto: CreateUserDto) {
+    try{
+      const passwordHash = await this.hashingService.hash(createUserDto.password)
+      const user = await this.prisma.user.create({
+        data: {
+          name: createUserDto.name,
+          email: createUserDto.email,
+          passwordHash: passwordHash
+        },
+        select:{ id:true, name: true, email: true, passwordHash: true }
       })
       return user;
     }catch(error){

@@ -3,7 +3,8 @@ import { Controller, Post, UseInterceptors, UploadedFile,
   Get, ParseIntPipe, Param,
   Body,
   Patch,
-  Delete} from '@nestjs/common';
+  Delete,
+  UseGuards} from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
@@ -11,13 +12,18 @@ import { randomUUID } from 'node:crypto';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthAdminGuard } from 'src/common/guards/admin.guard';
+import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 
 @Controller('users')
+@UseGuards(AuthAdminGuard)
+@UseInterceptors(AddHeaderInterceptor)
 export class UsersController {
   constructor(private readonly userService: UsersService){}
 
   @Get(':id')
   findOneUser(@Param('id', ParseIntPipe) id: number){
+    console.log('Token Env', process.env.TOKEN_KEY)
     return this.userService.findOne(id)
   }
 
@@ -26,9 +32,14 @@ export class UsersController {
     return this.userService.findAll()
   }
 
-  @Post()
+  @Post() // sem cript
   createUser(@Body() createUserDto: CreateUserDto){
     return this.userService.create(createUserDto)
+  }
+
+  @Post("/cripto") // com cript
+  createUserCript(@Body() createUserDto: CreateUserDto){
+    return this.userService.createCriptor(createUserDto)
   }
 
   @Patch(':id')
