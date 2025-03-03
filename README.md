@@ -8,47 +8,7 @@ nest g module auth
 npm i bcryptjs
 npm i --save-dev @types/bcryptjs
 
-##### 1.1 dentro da pasta auth/hash
 
-* criar hashing.service.ts
-```
-export abstract class HashingServiceProtocol{
-    abstract hash(password: string): Promise<string>; 
-    abstract compare(password: string, passwordHash: string): Promise<boolean>;
-}
-```
-
-* criar bcrypt.service.ts
-```
-import { HashingServiceProtocol } from "./hashing.service";
-import * as bcrypt from 'bcryptjs'
-
-export class BcryptService extends HashingServiceProtocol{
-    async hash(password: string): Promise<string> {
-        const salt = await bcrypt.getSalt("2");
-        return bcrypt.hash(password, salt)
-    }
-    async compare(password: string, passwordHash: string): Promise<boolean> {
-        return bcrypt.compare(password, passwordHash)
-    }
-}
-```
-
-* carregar no auth.module.ts
-```
-import { Module } from '@nestjs/common';
-import { HashingServiceProtocol } from './hash/hashing.service';
-import { BcryptService } from './hash/bcrypt.service';
-
-@Global()
-@Module({
-    providers: [
-        { provide: HashingServiceProtocol, useClass: BcryptService }
-    ],
-    exports: [ HashingServiceProtocol]
-})
-export class AuthModule {}
-```
 
 ##### 1.2 aplicando o servico auth/hash
 * no users.service.ts

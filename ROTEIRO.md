@@ -79,29 +79,11 @@ npx prisma studio
 npx nest g res users
 ```
 
-#### 5. Validator Pipes
-* ref.
-```
-https://www.npmjs.com/package/@nestjs/class-validator/v/0.13.1
-```
+#### 5. Validator DTOs
 
 * Dependência
 ```
 npm install class-validator class-transformer
-```
-
-* Dentro do main.ts
-```
-  import { NestFactory } from '@nestjs/core';
-  import { AppModule } from './app.module';
-  import { ValidationPipe } from '@nestjs/common';
-
-  async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.useGlobalPipes(new ValidationPipe())
-    await app.listen(process.env.PORT ?? 8080);
-  }
-  bootstrap();
 ```
 
 * Aplicação nos DTOs exemplo
@@ -124,6 +106,62 @@ npm install class-validator class-transformer
       @IsBoolean()
       completed?: boolean;
   }
+```
+
+* Dentro do main.ts
+```
+  import { NestFactory } from '@nestjs/core';
+  import { AppModule } from './app.module';
+  import { ValidationPipe } from '@nestjs/common';
+
+  async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    app.useGlobalPipes(new ValidationPipe())
+    await app.listen(process.env.PORT ?? 8080);
+  }
+  bootstrap();
+```
+
+##### 1.1 dentro da pasta auth/hash
+
+* criar hashing.service.ts
+```
+export abstract class HashingServiceProtocol{
+    abstract hash(password: string): Promise<string>; 
+    abstract compare(password: string, passwordHash: string): Promise<boolean>;
+}
+```
+
+* criar bcrypt.service.ts
+```
+import { HashingServiceProtocol } from "./hashing.service";
+import * as bcrypt from 'bcryptjs'
+
+export class BcryptService extends HashingServiceProtocol{
+    async hash(password: string): Promise<string> {
+        const salt = await bcrypt.getSalt("2");
+        return bcrypt.hash(password, salt)
+    }
+    async compare(password: string, passwordHash: string): Promise<boolean> {
+        return bcrypt.compare(password, passwordHash)
+    }
+}
+```
+
+* carregar no auth.module.ts
+```
+import { Module } from '@nestjs/common';
+import { HashingServiceProtocol } from './hash/hashing.service';
+import { BcryptService } from './hash/bcrypt.service';
+
+@Global()
+@Module({
+    providers: [
+        { provide: HashingServiceProtocol, useClass: BcryptService }
+    ],
+    exports: [ HashingServiceProtocol]
+})
+export class AuthModule {}
 ```
 
 #### 6. Criando endAPI Tasks
@@ -166,7 +204,8 @@ https://docs.nestjs.com/recipes/serve-static
 http://localhost:8080/files/image.png
 ```
 
-#### 8. Nest MVC
+
+#### X. Nest MVC
 ```
 https://docs.nestjs.com/techniques/mvc
 ```
