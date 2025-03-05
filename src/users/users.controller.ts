@@ -37,7 +37,7 @@ export class UsersController {
     return this.userService.create(createUserDto)
   }
 
-  @Post("/cripto") // com cript
+  @Post("cripto") // com cript
   createUserCript(@Body() createUserDto: CreateUserDto){
     return this.userService.createCriptor(createUserDto)
   }

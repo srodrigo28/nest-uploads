@@ -41,12 +41,12 @@ export class UsersService {
           email: createUserDto.email,
           passwordHash: passwordHash
         },
-        select:{ id:true, name: true, email: true, passwordHash: true }
+        select:{ id:true, name: true, email: true }
       })
       return user;
     }catch(error){
       console.log(error)
-      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+      throw new HttpException('Usuário não inserido', HttpStatus.NOT_FOUND)
     }
   }
 

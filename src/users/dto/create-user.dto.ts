@@ -10,6 +10,6 @@ export class CreateUserDto {
     @IsString() @MinLength(6)  @IsNotEmpty()
     password: string;
 
-    @IsNumber() @IsNotEmpty()
-    Task: number;
+    // @IsNumber() @IsNotEmpty()
+    // Task?: number;
 }

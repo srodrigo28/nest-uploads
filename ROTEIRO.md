@@ -122,7 +122,12 @@ npm install class-validator class-transformer
   bootstrap();
 ```
 
-##### 1.1 dentro da pasta auth/hash
+#### 6. Criando endAPI Tasks
+```
+npx nest g res tasks
+```
+
+#### X dentro da pasta auth/hash
 
 * criar hashing.service.ts
 ```
@@ -162,11 +167,6 @@ import { BcryptService } from './hash/bcrypt.service';
     exports: [ HashingServiceProtocol]
 })
 export class AuthModule {}
-```
-
-#### 6. Criando endAPI Tasks
-```
-npx nest g res tasks
 ```
 
 #### 7. Upload One Image
@@ -248,5 +248,3 @@ npm install swagger-ui-express
   ```
 
 #### Relacionando imagem e usuário
-
-

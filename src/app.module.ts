@@ -1,6 +1,4 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
@@ -20,8 +18,8 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot(),
     AuthModule
   ],
-  controllers: [AppController],
-  providers: [ AppService, 
+  controllers: [],
+  providers: [ 
     // { provide: APP_GUARD, useClass: AuthAdminGuard }
    ],
 })

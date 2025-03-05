@@ -18,6 +18,16 @@ Content-Type: application/json
 }
 
 #####
+POST http://localhost:8080/users/cripto
+Content-Type: application/json
+
+{
+    "name": "Xiaomi X-3 pro 123",
+    "email": "admin123@gmail.com",
+    "password": "123123"
+}
+
+#####
 PATCH http://localhost:8080/users/1
 Content-Type: application/json
 
